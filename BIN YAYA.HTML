@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHABLO D.C - Data Sales</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 18px;
+      color: #00bcd4;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
+    }
+    .product {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .product h2 {
+      color: #00bcd4;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+    .product p {
+      font-size: 24px;
+      color: #1e3c72;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .product button {
+      background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .product button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,188,212,0.4);
+    }
+    footer {
+      background-color: #1e3c72;
+      color: white;
+      text-align: center;
+      padding: 30px;
+      margin-top: 60px;
+      font-size: 16px;
+    }
+    .logo-img {
+      display: block;
+      margin: 20px auto;
+      border-radius: 12px;
+      max-width: 100%;
+      height: auto;
+    }
+    .login-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #00bcd4;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    .login-btn:hover {
+      background-color: #0097a7;
+      transform: scale(1.05);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 400px;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    .modal-content h2 {
+      color: #1e3c72;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: bold;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #00bcd4;
+      box-shadow: 0 0 5px rgba(0,188,212,0.3);
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+    .modal-buttons button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .login-submit {
+      background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+      color: white;
+    }
+    .login-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,188,212,0.4);
+    }
+    .close-btn {
+      background-color: #f44336;
+      color: white;
+    }
+    .close-btn:hover {
+      background-color: #da190b;
+    }
+    .user-info {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: white;
+      font-size: 14px;
+    }
+    .user-info button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: all 0.3s ease;
+    }
+    .user-info button:hover {
+      background-color: #da190b;
+    }
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 32px;
+      }
+      .products {
+        grid-template-columns: 1fr;
+      }
+      .login-btn {
+        top: 10px;
+        right: 10px;
+        padding: 8px 15px;
+        font-size: 12px;
+      }
+      .modal-content {
+        width: 95%;
+      }
+    }
+  </style>
+</head>
+<body onload="openLoginModal()">
+  <header>
+    <h1>PHABLO D.C DATA SALES</h1>
+    <p>Your No.1 VTU & Data Vendor</p>
+    <button class="login-btn" onclick="openLoginModal()">Login / Sign Up</button>
+    <div class="user-info" id="userInfo" style="display:none;">
+      <span>Welcome, <strong id="userName"></strong>!</span>
+      <button onclick="logoutUser()">Logout</button>
+    </div>
+  </header>
+
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <h2 id="modalTitle">Login</h2>
+      <div class="form-group">
+        <label for="email">Email or Username:</label>
+        <input type="text" id="email" placeholder="Enter your email or username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter your password">
+      </div>
+      <div id="signupFields" style="display:none;">
+        <div class="form-group">
+          <label for="fullname">Full Name:</label>
+          <input type="text" id="fullname" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number:</label>
+          <input type="tel" id="phone" placeholder="Enter your phone number">
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button class="login-submit" onclick="handleLogin()">Login</button>
+        <button class="close-btn" onclick="closeLoginModal()">Cancel</button>
+      </div>
+      <p style="text-align:center; margin-top:15px; font-size:14px;">
+        <span id="toggleText">Don't have an account? <a href="#" onclick="toggleSignup(); return false;" style="color:#00bcd4; text-decoration:none;">Sign Up</a></span>
+      </p>
+    </div>
+  </div>
+
+  <div class="container">
+    <img src="image.jpg" alt="Data Services" class="logo-img" height="300" width="300"/>
+    
+    <section class="products">
+      <div class="product">
+        <h2>MTN 1GB</h2>
+        <p>₦300</p>
+        <button onclick="buyNow('MTN 1GB')">Buy Now</button>
+      </div>
+
+      <div class="product">
+        <h2>Airtel 2GB</h2>
+        <p>₦500</p>
+        <button onclick="buyNow('Airtel 2GB')">Buy Now</button>
+      </div>
+
+      <div class="product">
+        <h2>Glo 3GB</h2>
+        <p>₦800</p>
+        <button onclick="buyNow('Glo 3GB')">Buy Now</button>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 PHABLO D.C Data Services. All rights reserved. | Designed by Official Muhammad</p>
+  </footer>
+
+  <script>
+    let isLoggedIn = false;
+    let currentUser = null;
+
+    function openLoginModal() {
+      document.getElementById('loginModal').classList.add('active');
+      resetForm();
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.remove('active');
+      resetForm();
+    }
+
+    function resetForm() {
+      document.getElementById('email').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('fullname').value = '';
+      document.getElementById('phone').value = '';
+      document.getElementById('signupFields').style.display = 'none';
+      document.getElementById('modalTitle').textContent = 'Login';
+      document.getElementById('toggleText').innerHTML = 'Don\'t have an account? <a href="#" onclick="toggleSignup(); return false;" style="color:#00bcd4; text-decoration:none;">Sign Up</a>';
+    }
+
+    function toggleSignup() {
+      const signupFields = document.getElementById('signupFields');
+      const modalTitle = document.getElementById('modalTitle');
+      const toggleText = document.getElementById('toggleText');
+      
+      if (signupFields.style.display === 'none') {
+        signupFields.style.display = 'block';
+        modalTitle.textContent = 'Sign Up';
+        toggleText.innerHTML = 'Already have an account? <a href="#" onclick="toggleSignup(); return false;" style="color:#00bcd4; text-decoration:none;">Login</a>';
+      } else {
+        signupFields.style.display = 'none';
+        modalTitle.textContent = 'Login';
+        toggleText.innerHTML = 'Don\'t have an account? <a href="#" onclick="toggleSignup(); return false;" style="color:#00bcd4; text-decoration:none;">Sign Up</a>';
+      }
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    function handleLogin() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const signupFields = document.getElementById('signupFields');
+      const isSignup = signupFields.style.display === 'block';
+
+      if (!email || !password) {
+        alert('Please fill in all required fields!');
+        return;
+      }
+
+      if (isSignup) {
+        if (!validateEmail(email)) {
+          alert('Please enter a valid email address!');
+          return;
+        }
+        const fullname = document.getElementById('fullname').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+
+        if (!fullname || !phone) {
+          alert('Please fill in all fields for sign up!');
+          return;
+        }
+
+        // Save user data (in real app, would send to server)
+        currentUser = {
+          email: email,
+          fullname: fullname,
+          phone: phone
+        };
+        alert('Account created successfully! Welcome, ' + fullname + '!');
+      } else {
+        // Simple login validation
+        currentUser = {
+          email: email,
+          fullname: email.split('@')[0] // Use email prefix as display name
+        };
+        alert('Logged in successfully!');
+      }
+
+      isLoggedIn = true;
+      closeLoginModal();
+      updateUIAfterLogin();
+    }
+
+    function updateUIAfterLogin() {
+      document.querySelector('.login-btn').style.display = 'none';
+      const userInfo = document.getElementById('userInfo');
+      userInfo.style.display = 'block';
+      document.getElementById('userName').textContent = currentUser.fullname;
+    }
+
+    function logoutUser() {
+      isLoggedIn = false;
+      currentUser = null;
+      document.querySelector('.login-btn').style.display = 'block';
+      document.getElementById('userInfo').style.display = 'none';
+      alert('You have been logged out!');
+    }
+
+    // Smooth scroll for anchor links
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    });
+
+    // Feedback for Buy Now buttons
+    function buyNow(product) {
+      if (!isLoggedIn) {
+        alert('Please login first to make a purchase!');
+        openLoginModal();
+        return;
+      }
+      alert('Thank you, ' + currentUser.fullname + '! You selected: ' + product + '\n\nProceeding to checkout...');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('loginModal');
+      if (event.target === modal) {
+        closeLoginModal();
+      }
+    }
+  </script>
+
+---
+
+✅ HTML (index.html)
+
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <h1 style="color:aqua;">PHABLO D.C DATA SALES</h1>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body onload="openLoginModal()">
+  <header>
+    <h1 style="color:aqua;">BEST DATA DEAL AND VTU SERVICESS </h1>
+    <p style="background-position: 0cap;color: blue;">Your No.1 VTU & Data Vendor</p>
+  </header>
+
+  <section class="products">
+    <div class="product">
+      <h2 style="background-color: aqua;"">MTN 1GB</h2>
+      <p>₦300</p>
+      <button  style="background-color: blue;"buyNow('MTN 1GB')">Buy Now</button>
+    </div>
+    <div class="product">
+      <h2 style="background-color: aqua;">Airtel 2GB</h2>
+      <p>₦500</p>
+      <button style="background-color: blue;" onclick="buyNow('Airtel 2GB')">Buy Now</button>
+    </div>
+    <div class="product">
+      <h2 style="background-color: aqua;">Glo 3GB</h2>
+      <p>₦800</p>
+      <button style="background-color: blue;" onclick="buyNow('Glo 3GB')">Buy Now</button>
+    </div>
+  </section>
+
+  <footer>
+    <p style="background-color: aqua;">Designed by Official Muhammad © 2025</p>
+</body>
+</html>
